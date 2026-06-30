@@ -20,7 +20,6 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const router = useRouter();
 
-  const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
 
@@ -60,26 +59,17 @@ export default function Home() {
 
       <Card className="w-full p-4">
         <CardHeader>
-          <CardTitle>Registro</CardTitle>
+          <CardTitle>Inicia sesión</CardTitle>
           <CardDescription>
-            Ingresa tus datos para registrarte.
+            Ingresa tus datos para iniciar sesión.
           </CardDescription>
           <CardAction>
-            <Link href="/signin">O inicia sesión aquí</Link>
+            <Link href="/signin">O registrate aquí</Link>
           </CardAction>
         </CardHeader>
         <CardContent>
 
           <form onSubmit={handleSubmit}>
-
-            <InputRequired
-              id="Nombre"
-              label="Nombre completo"
-              placeholderText="Ingresa tu nombre completo"
-              type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-            />
 
             <InputRequired
               id="Correo"
@@ -99,7 +89,7 @@ export default function Home() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <ButtonLogin placeholderText="Clic para registrarte" />
+            <ButtonLogin placeholderText="Clic para iniciar sesión" />
 
           </form>
 
