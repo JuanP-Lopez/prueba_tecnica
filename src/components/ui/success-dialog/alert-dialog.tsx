@@ -7,16 +7,14 @@ import {
 } from "@/components/ui/alert"
 
 type InputRequiredProps = {
-  message?: any,
-  code?: any
+  message: any,
 };
 
-export function AlertDialog({message, code} : InputRequiredProps) {
+export function SuccessDialog({message} : InputRequiredProps) {
   return (
     <div className="grid w-full max-w-md items-start gap-4">
-      <Alert variant="destructive" >
+      <Alert variant="success" >
         <CheckCircle2Icon />
-        <AlertTitle>Codigo de error: {code}</AlertTitle>
         <AlertDescription>
           {message}
         </AlertDescription>

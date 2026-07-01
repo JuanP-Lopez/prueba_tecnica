@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 
+import { SuccessDialog } from "@/components/ui/success-dialog/alert-dialog";
+import { AlertDialog } from "@/components/ui/alert-dialog/alert-dialog";
 import { InputRequired } from "@/components/ui/input-required/input-required";
 import { ButtonLogin } from "@/components/ui/button-login/button-login";
 import {
@@ -17,39 +19,43 @@ import {
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+interface CustomError {
+  message: string;
+  status: number | string;
+}
+
 export default function Home() {
   const router = useRouter();
 
-  const [correo, setCorreo] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e: any) => {
+  const [error, setError] = useState<CustomError | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const request = { email, password };
+
     try {
-      const res = await fetch("https://quickpassapi-production.up.railway.app/api/auth/login", {
+      const res = await fetch("/api/auth/signin", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          correo,
-          password
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(request)
       });
 
-      console.log(res);
-
       const result = await res.json();
+      console.log("Respuesta del servidor: ", result);
 
-      // login(result);
-
-      if (res.status == 200) {
+      if (result.status === 400) {
+        setError(result);
+      } else if (result.status === 200) {
+        setSuccess(result.message)
         router.push("/dashboard");
       }
-
     } catch (error) {
-      console.log("Error al iniciar sesión: ", error);
+      console.log("Error en registro: ", error);
     }
   };
 
@@ -64,7 +70,7 @@ export default function Home() {
             Ingresa tus datos para iniciar sesión.
           </CardDescription>
           <CardAction>
-            <Link href="/signin">O registrate aquí</Link>
+            <Link href="/">O registrate aquí</Link>
           </CardAction>
         </CardHeader>
         <CardContent>
@@ -76,8 +82,8 @@ export default function Home() {
               label="Correo electrónico"
               placeholderText="Ingresa tu correo electrónico"
               type="email"
-              value={correo}
-              onChange={(e) => setCorreo(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
             <InputRequired
@@ -95,6 +101,18 @@ export default function Home() {
 
         </CardContent>
       </Card>
+
+      <div className="justify-center">
+        {success && (
+          <SuccessDialog message={success} />
+        )}
+
+        {error && (
+          <AlertDialog message={error.message} code={error.status} />
+        )}
+
+      </div>
+
     </div>
   );
 }
