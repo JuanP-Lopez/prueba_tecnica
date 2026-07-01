@@ -1,10 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-export async function createClient() {
-    console.log("URL DE SUPABASE:", process.env.SUPABASE_URL);
-    console.log("ANON KEY EXISTE?:", !!process.env.SUPABASE_ANON_KEY);
-    
+export async function createClient() {    
     const cookieStore = await cookies()
 
     return createServerClient(

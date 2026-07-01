@@ -48,7 +48,6 @@ export default function Home() {
       });
 
       const result = await res.json();
-      console.log("Respuesta del servidor: ", result);
 
       if (result.status === 200) {
         setSuccess("Usuario creado con exito")  
@@ -57,7 +56,6 @@ export default function Home() {
       } else if  (result.message) {
         setError(result);
       }
-      console.log(success);
 
     } catch (error) {
       console.log("Error en registro: ", error);

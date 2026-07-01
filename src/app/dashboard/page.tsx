@@ -1,5 +1,6 @@
 "use client"
 
+import { TrackingProvider } from "@/providers/TrackingProvider";
 import { createBrowserClient } from "@supabase/ssr";
 
 import { useState, useEffect } from "react";
@@ -18,8 +19,8 @@ import { useRouter } from "next/navigation";
 export default function Dashboard() {
   const router = useRouter();
 
-  const [ userInfo, setUser ] = useState<string | null>(null);
- 
+  const [userInfo, setUser] = useState<string | null>(null);
+
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -32,7 +33,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function getUser() {
-      const { data: {user}, error } = await supabase.auth.getUser();
+      const { data: { user }, error } = await supabase.auth.getUser();
 
       if (user) {
         // 2. Guardamos directamente el string del nombre guardado en metadata
@@ -50,15 +51,17 @@ export default function Dashboard() {
 
 
   return (
-    <div className=" flex flex-col justify-center items-center bg-background text-foreground min-h-screen m-2 gap-2">
-      {/* <ModeToggle /> */}
+    <TrackingProvider>
+      <div className=" flex flex-col justify-center items-center bg-background text-foreground min-h-screen m-2 gap-2">
+        {/* <ModeToggle /> */}
 
-      <Card className="w-full p-4 items-center">
-        <CardDescription className="text-black-800">
-          Welcome {userInfo}! To logout <span onClick={handleLogout} className="text-blue-700 underline">click here</span>
-        </CardDescription>
-      </Card>
+        <Card className="w-full p-4 items-center">
+          <CardDescription className="text-black-800">
+            Welcome {userInfo}! To logout click <span onClick={handleLogout} className="text-blue-700 underline">here</span>
+          </CardDescription>
+        </Card>
 
-    </div>
+      </div>
+    </TrackingProvider>
   )
 }

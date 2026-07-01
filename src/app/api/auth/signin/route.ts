@@ -80,11 +80,29 @@ export async function POST(request: Request) {
             await supabase.from("intentos_signin").update({ conteo_intentos: 0, tiempo_bloqueo: null }).eq("correo", email);
         }
 
-        return NextResponse.json({
+        const session_id = crypto.randomUUID();
+        const user_id = data.user?.id;
+
+        const { data: session, error } = await supabase.from("manejo_sessions").upsert({
+            user_id: user_id,
+            session_id: session_id,
+            ultima_actividad: new Date().toISOString()
+        }, { onConflict: 'user_id'} );
+
+        const response = NextResponse.json({
             message: "Inicio de sesión correcto",
             user: data.user,
             status: 200
         })
+
+        response.cookies.set("current_session", session_id, {
+            path: "/",
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax"
+        });
+
+        return response;
 
     } catch (err) {
         console.log(err);
