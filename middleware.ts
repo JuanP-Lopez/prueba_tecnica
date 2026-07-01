@@ -2,7 +2,11 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
 export async function middleware(request : NextRequest) {
-    const response = NextResponse.next();
+    const response = NextResponse.next({
+        request: {
+            headers: request.headers,
+        }
+    });
     const { pathname } = request.nextUrl;
 
     if (pathname.startsWith("/dashboard")) {
@@ -16,39 +20,17 @@ export async function middleware(request : NextRequest) {
             const tiempoTranscurrido = now - parseInt(lastAction);
 
             if (tiempoTranscurrido > PERIODO_INACTIVIDAD) {
-                const supabase = createServerClient(
-                    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-                    {
-                        cookies: {
-                            get(name) {
-                                return request.cookies.get(name)?.value;
-                            },
-                            set(name, value, options) {
-                                response.cookies.set({name, value, ...options});
-                            },
-                            remove(name, options) {
-                                response.cookies.set({
-                                    name, value: "", ...options
-                                });
-                            },
-                        }
-                    }
-                );
+                const signUpUrl = new URL("/", request.url);
+                signUpUrl.searchParams.set("error", "timeout");
 
-                await supabase.auth.signOut();
-
-                const loginUrl = new URL("/", request.url);
-                loginUrl.searchParams.set("error", "timeout");
-
-                const redirectResponse = NextResponse.redirect(loginUrl);
-
+                const redirectResponse = NextResponse.redirect(signUpUrl);
+                redirectResponse.cookies.delete("current_session");
                 redirectResponse.cookies.delete("lastAction");
                 return redirectResponse;
             }
-        } else {
-            response.cookies.set("lastAction", now.toString(), { path: "/"} );
         }
+        
+        response.cookies.set("lastAction", now.toString(), { path: "/"} );
 
         const supabase = createServerClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -60,9 +42,15 @@ export async function middleware(request : NextRequest) {
                         response.cookies.set({
                             name, value, ...options
                         });
+                        request.cookies.set({
+                            name, value, ...options
+                        });
                     },
                     remove(name, options) {
                         response.cookies.set({
+                            name, value: "", ...options
+                        });
+                        request.cookies.set({
                             name, value: "", ...options
                         });
                     },

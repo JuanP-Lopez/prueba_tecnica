@@ -31,10 +31,6 @@ export default function Dashboard() {
     router.push("/");
   }
 
-  const handlePrueba = async () => {
-    router.push("/dashboard/prueba/")
-  }
-
   useEffect(() => {
     async function getUser() {
       const { data: { user }, error } = await supabase.auth.getUser();
@@ -62,9 +58,6 @@ export default function Dashboard() {
         <Card className="w-full p-4 items-center">
           <CardDescription className="text-black-800">
             Welcome {userInfo}! To logout click <span onClick={handleLogout} className="text-blue-700 underline">here</span>
-          </CardDescription>
-          <CardDescription className="text-black-800">
-            <span onClick={handlePrueba} className="text-blue-700 underline">Dirigir a prueba</span>
           </CardDescription>
         </Card>
 
