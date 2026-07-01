@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { SuccessDialog } from "@/components/ui/success-dialog/alert-dialog";
 import { AlertDialog } from "@/components/ui/alert-dialog/alert-dialog";
+import { AttempsDialog } from "@/components/ui/attemps-dialog/attemps-dialog";
 import { InputRequired } from "@/components/ui/input-required/input-required";
 import { ButtonLogin } from "@/components/ui/button-login/button-login";
 import {
@@ -32,6 +33,7 @@ export default function Home() {
 
   const [error, setError] = useState<CustomError | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [ time, setTime ] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,10 +51,15 @@ export default function Home() {
       console.log("Respuesta del servidor: ", result);
 
       if (result.status === 400) {
-        setError(result);
+        setError({
+          message: result.error?.authError?.message,
+          status: result.status
+        });
       } else if (result.status === 200) {
         setSuccess(result.message)
         router.push("/dashboard");
+      } else if (result.status === 403) {
+        setTime(result.error.message.toString());
       }
     } catch (error) {
       console.log("Error en registro: ", error);
@@ -62,6 +69,10 @@ export default function Home() {
   return (
     <div className=" flex flex-col justify-center items-center bg-background text-foreground min-h-screen m-2 gap-2">
       {/* <ModeToggle /> */}
+
+      {time && (
+        <AttempsDialog attemps={time} />
+      )}
 
       <Card className="w-full p-4">
         <CardHeader>
