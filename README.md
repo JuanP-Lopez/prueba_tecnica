@@ -7,6 +7,8 @@
   <em>
     Esta prueba tecnica consiste en la elaboración de una aplicación sencilla con integraciones de AUTH para
     Sign In y Sign Up, junto a bloqueos progresivos de inicio de sesión basado en intentos fallidos.
+
+    Junto a todos los archivos aqui adjuntos, se incluye schema.sql para replicar el funcionamiento de la base de datos.
   </em> 
 </p>
 
@@ -21,6 +23,8 @@
     <li>Integración de avisos de errores o fallos</li>
   </ul>
 </p>
+
+<p align="center">Despliegue disponible <a href="https://prueba-tecnica-eight-iota.vercel.app">en Vercel</a>.</p>
 
 ### 🔠 Languages
 <div>
