@@ -7,7 +7,7 @@ import { createBrowserClient } from "@supabase/ssr";
 export function TrackingProvider({ children } : { children: React.ReactNode }) {
     const router = useRouter();
     const timerRef = useRef<NodeJS.Timeout | null>(null);
-    const PERIODO_INACTIVIDAD = 5 * 60 * 1000;
+    const PERIODO_INACTIVIDAD = 15 * 60 * 1000;
 
     const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,

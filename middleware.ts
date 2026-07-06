@@ -14,7 +14,7 @@ export async function middleware(request : NextRequest) {
         const sessionCookie = request.cookies.get("current_session")?.value;
         const now = Date.now();
 
-        const PERIODO_INACTIVIDAD = 5 * 60 * 1000;
+        const PERIODO_INACTIVIDAD = 15 * 60 * 1000;
 
         if (lastAction) {
             const tiempoTranscurrido = now - parseInt(lastAction);
