@@ -62,7 +62,7 @@ export async function middleware(request : NextRequest) {
 
         if (user) {
             const { data: is_same_session } = await supabase
-                .from("manejo_session")
+                .from("manejo_sessions")
                 .select("session_id")
                 .eq("user_id", user.id)
                 .maybeSingle();
